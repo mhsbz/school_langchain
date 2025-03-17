@@ -31,8 +31,11 @@ def generate_answer(question, context):
                 {"role": "user", "content": prompt}
             ],
             "temperature": 0.7,
-            "max_tokens": 800
+            "max_tokens": 800,
+            "stream": False,
         }
+
+        print(Config.DEEPSEEK_API_KEY)
         
         # 设置请求头
         headers = {

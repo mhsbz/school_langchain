@@ -1,14 +1,18 @@
-from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_community.document_loaders import Docx2txtLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
 from config import Config
 import os
-import chromadb
+import pickle
+import shutil
 
 # 全局向量存储实例
 vector_store = None
+
+# 本地向量存储目录
+VECTOR_STORE_DIR = "./vector_store"
 
 def init_vector_store():
     """初始化向量存储"""
@@ -17,37 +21,30 @@ def init_vector_store():
         # 初始化向量模型
         embeddings = HuggingFaceEmbeddings(model_name=Config.EMBEDDING_MODEL)
         
-        # 连接ChromaDB
-        client = chromadb.HttpClient(
-            host=Config.CHROMA_HOST,
-            port=Config.CHROMA_PORT
-        )
-        
-        # 检查集合是否存在
-        collections = client.list_collections()
-        collection_names = [collection.name for collection in collections]
-        
-        if Config.CHROMA_COLLECTION not in collection_names:
-            # 如果集合不存在，创建并加载知识库
-            print(f"集合 {Config.CHROMA_COLLECTION} 不存在，正在创建并加载知识库...")
-            vector_store = Chroma(
-                collection_name=Config.CHROMA_COLLECTION,
-                embedding_function=embeddings,
-                client=client,
-                persist_directory="./chroma_db"
-            )
-            
+        # 检查本地向量存储目录是否存在
+        if os.path.exists(VECTOR_STORE_DIR) and os.path.isdir(VECTOR_STORE_DIR) and len(os.listdir(VECTOR_STORE_DIR)) > 0:
+            # 如果向量存储目录存在且不为空，直接从本地加载
+            print(f"本地向量存储目录 {VECTOR_STORE_DIR} 已存在，正在加载...")
+            try:
+                vector_store = FAISS.load_local(VECTOR_STORE_DIR, embeddings, allow_dangerous_deserialization=True)
+                print("从本地加载向量存储成功")
+            except Exception as load_error:
+                print(f"从本地加载向量存储失败: {load_error}，将重新创建")
+                # 如果加载失败，清空目录并重新创建
+                shutil.rmtree(VECTOR_STORE_DIR, ignore_errors=True)
+                os.makedirs(VECTOR_STORE_DIR, exist_ok=True)
+                vector_store = FAISS.from_texts(["初始化文档"], embeddings)
+                vector_store.save_local(VECTOR_STORE_DIR)
+                # 加载知识库
+                load_knowledge_base(vector_store, embeddings)
+        else:
+            # 如果向量存储目录不存在或为空，创建并加载知识库
+            print(f"本地向量存储目录 {VECTOR_STORE_DIR} 不存在或为空，正在创建并加载知识库...")
+            os.makedirs(VECTOR_STORE_DIR, exist_ok=True)
+            vector_store = FAISS.from_texts(["初始化文档"], embeddings)
+            vector_store.save_local(VECTOR_STORE_DIR)
             # 加载知识库
             load_knowledge_base(vector_store, embeddings)
-        else:
-            # 如果集合已存在，直接连接
-            print(f"集合 {Config.CHROMA_COLLECTION} 已存在，正在连接...")
-            vector_store = Chroma(
-                collection_name=Config.CHROMA_COLLECTION,
-                embedding_function=embeddings,
-                client=client,
-                persist_directory="./chroma_db"
-            )
         
         print("向量存储初始化成功")
         return True
@@ -70,7 +67,7 @@ def load_knowledge_base(vector_store, embeddings):
         docx_loader = DirectoryLoader(
             Config.DATA_DIR,
             glob="**/*.docx",
-            loader_cls=DocxLoader
+            loader_cls=Docx2txtLoader
         )
         docx_documents = docx_loader.load()
         documents.extend(docx_documents)
@@ -96,8 +93,16 @@ def load_knowledge_base(vector_store, embeddings):
         print(f"文档分块完成，共 {len(chunks)} 个块")
         
         # 将分块添加到向量存储
-        vector_store.add_documents(chunks)
-        vector_store.persist()
+        if len(chunks) > 0:
+            # 创建新的向量存储
+            new_vector_store = FAISS.from_documents(chunks, embeddings)
+            # 合并到现有向量存储
+            if hasattr(vector_store, 'docstore') and hasattr(vector_store, 'index'):
+                vector_store.merge_from(new_vector_store)
+            else:
+                vector_store = new_vector_store
+            # 保存到本地
+            vector_store.save_local(VECTOR_STORE_DIR)
         
         print("知识库加载完成")
         return True

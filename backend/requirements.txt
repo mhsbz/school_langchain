@@ -9,6 +9,7 @@ python-dotenv
 pydantic
 requests
 python-docx
+docx2txt
 sentence-transformers
 faiss-cpu
 bs4

@@ -11,17 +11,5 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
     restart: unless-stopped
 
-  chromadb:
-    image: ghcr.io/chroma-core/chroma:latest
-    container_name: chromadb
-    ports:
-      - "8000:8000"
-    volumes:
-      - chroma_data:/chroma/chroma
-    environment:
-      - ALLOW_RESET=true
-    restart: unless-stopped
-
 volumes:
   mongodb_data:
-  chroma_data:

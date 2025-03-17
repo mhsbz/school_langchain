@@ -227,7 +227,12 @@ export default {
       this.messages = [];
       this.selectedHistoryIndex = -1;
       this.currentConversationId = null;
-      this.toggleDrawer();
+      // 刷新推荐问题
+      this.refreshSuggestions();
+      // 如果抽屉是打开的，则关闭它
+      if (this.isDrawerOpen) {
+        this.toggleDrawer();
+      }
     },
     async sendMessage() {
       if (this.inputMessage.trim() === '') return;
