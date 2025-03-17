@@ -39,6 +39,7 @@ def handle_question():
         
         # 处理问题
         result = process_question(question, conversation_id)
+        print(result)
         
         return jsonify(result)
     except Exception as e:

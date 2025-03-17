@@ -16,6 +16,7 @@ VECTOR_STORE_DIR = "./vector_store"
 
 def init_vector_store():
     """初始化向量存储"""
+    print("正在初始化向量存储...")
     global vector_store
     try:
         # 初始化向量模型

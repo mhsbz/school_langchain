@@ -3,7 +3,7 @@ import axios from 'axios';
 // 创建axios实例
 const api = axios.create({
   baseURL: 'http://localhost:3000',
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -45,6 +45,7 @@ const chatApi = {
   sendQuestion: async (data) => {
     try {
       const response = await api.post('/api/chat/question', data);
+      console.log("sendQuestion response",response)
       return response.data;
     } catch (error) {
       console.error('发送问题失败:', error);

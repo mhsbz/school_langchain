@@ -22,7 +22,7 @@ class Config:
     DEEPSEEK_API_URL = os.getenv('DEEPSEEK_API_URL', 'https://api.deepseek.com/v1/chat/completions')
     
     # 知识库配置
-    DATA_DIR = os.getenv('DATA_DIR', '../data')
+    DATA_DIR = os.getenv('DATA_DIR', './data')
     
     # 分块配置
     CHUNK_SIZE = int(os.getenv('CHUNK_SIZE', '1000'))
