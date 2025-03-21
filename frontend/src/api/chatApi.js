@@ -44,6 +44,14 @@ const chatApi = {
   // 发送问题
   sendQuestion: async (data) => {
     try {
+      // 从localStorage获取当前用户信息
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        // 添加user_id到请求数据中
+        data.user_id = user.user_id;
+      }
+      
       const response = await api.post('/api/chat/question', data);
       console.log("sendQuestion response",response)
       return response.data;

@@ -79,10 +79,24 @@
           </div>
         </template>
       </div>
+      
+      <!-- 机器人回答中的加载状态 -->
+      <div class="message-container bot" v-if="isLoading && messages.length > 0 && messages[messages.length-1].type === 'user'">
+        <div class="avatar-container">
+          <img src="@/assets/images/机器人头像.png" alt="机器人" class="robot-avatar">
+        </div>
+        <div class="message bot-message">
+          <div class="message-content typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
     </div>
     
     <!-- 猜你想问区域 -->
-    <div class="suggestions-container" v-if="suggestions.length > 0">
+    <div class="suggestions-container" v-if="suggestions.length > 0 && !hasConversationStarted">
       <div class="suggestions-header">
         <div class="header-content">
           <span>猜你想问</span>
@@ -131,6 +145,7 @@
 
 <script>
 import chatApi from '@/api/chatApi';
+import userApi from '@/api/userApi';
 
 export default {
   name: 'ChatBot',
@@ -143,16 +158,42 @@ export default {
       chatHistory: [],
       selectedHistoryIndex: -1,
       currentConversationId: null,
-      isLoading: false
+      isLoading: false,
+      currentUser: null,
+      hasConversationStarted: false
     }
   },
   created() {
+    // 获取当前用户信息
+    this.currentUser = userApi.getCurrentUser();
     // 获取推荐问题
     this.fetchSuggestions();
     // 获取对话历史
     this.fetchConversations();
   },
+  
+  // 监听消息数组变化，自动滚动到底部
+  watch: {
+    messages: {
+      handler() {
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+      },
+      deep: true
+    }
+  },
   methods: {
+    // 退出登录
+    handleLogout() {
+      userApi.logout();
+      this.$router.push('/login');
+    },
+    
+    // 监听消息变化，自动滚动到底部
+    updated() {
+      this.scrollToBottom();
+    },
     async fetchSuggestions() {
       try {
         const response = await chatApi.getSuggestions();
@@ -227,6 +268,8 @@ export default {
       this.messages = [];
       this.selectedHistoryIndex = -1;
       this.currentConversationId = null;
+      // 重置对话状态，使"猜你想问"区域可见
+      this.hasConversationStarted = false;
       // 刷新推荐问题
       this.refreshSuggestions();
       // 如果抽屉是打开的，则关闭它
@@ -248,6 +291,9 @@ export default {
       
       // 清空输入框
       this.inputMessage = '';
+      
+      // 设置对话已开始，隐藏"猜你想问"区域
+      this.hasConversationStarted = true;
       
       // 显示加载状态
       this.isLoading = true;
@@ -281,7 +327,7 @@ export default {
       } finally {
         this.isLoading = false;
         
-        // 滚动到底部
+        // 滚动到底部 - 确保在DOM更新后执行
         this.$nextTick(() => {
           this.scrollToBottom();
         });
@@ -330,7 +376,10 @@ export default {
     },
     scrollToBottom() {
       if (this.$refs.chatContent) {
-        this.$refs.chatContent.scrollTop = this.$refs.chatContent.scrollHeight;
+        // 使用setTimeout确保在DOM完全更新后执行滚动
+        setTimeout(() => {
+          this.$refs.chatContent.scrollTop = this.$refs.chatContent.scrollHeight;
+        }, 0);
       }
     }
   }
@@ -592,7 +641,7 @@ export default {
   flex: 1;
   overflow-y: auto;
   padding: 15px;
-  padding-bottom: 80px; /* 为底部固定的输入框留出空间 */
+  padding-bottom: 120px; /* 增加底部padding，确保最后的消息不被输入框遮挡 */
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -812,7 +861,44 @@ input {
   height: 24px;
 }
 
-/* 响应式设计 */
+/* 打字指示器样式 */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  min-width: 40px;
+}
+
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  float: left;
+  margin: 0 1px;
+  background-color: #9E9EA1;
+  display: block;
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+.typing-indicator span:nth-of-type(1) {
+  animation: 1s blink infinite 0.3333s;
+}
+
+.typing-indicator span:nth-of-type(2) {
+  animation: 1s blink infinite 0.6666s;
+}
+
+.typing-indicator span:nth-of-type(3) {
+  animation: 1s blink infinite 0.9999s;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 1;
+  }
+}
+
 @media (max-width: 768px) {
   .chat-container {
     max-width: 100%;

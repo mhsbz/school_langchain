@@ -18,7 +18,8 @@ def handle_question():
     请求体:
     {
         "question": "用户问题",
-        "conversation_id": "可选，对话ID"
+        "conversation_id": "可选，对话ID",
+        "user_id": "可选，用户ID"
     }
     
     响应:
@@ -36,9 +37,10 @@ def handle_question():
         
         question = data['question']
         conversation_id = data.get('conversation_id')
+        user_id = data.get('user_id')  # 获取用户ID
         
         # 处理问题
-        result = process_question(question, conversation_id)
+        result = process_question(question, conversation_id, user_id)
         print(result)
         
         return jsonify(result)
@@ -52,6 +54,7 @@ def handle_get_history():
     
     查询参数:
     conversation_id: 可选，对话ID，如果提供则返回该对话的所有消息，否则返回所有对话
+    user_id: 可选，用户ID，如果提供则只返回该用户的对话
     
     响应:
     如果提供conversation_id，返回消息列表
@@ -59,14 +62,15 @@ def handle_get_history():
     """
     try:
         conversation_id = request.args.get('conversation_id')
+        user_id = request.args.get('user_id')  # 获取用户ID
         
         if conversation_id:
             # 获取指定对话的所有消息
             messages = get_conversation_messages(conversation_id)
             return jsonify(messages)
         else:
-            # 获取所有对话
-            conversations = get_chat_history()
+            # 获取对话历史，如果提供了用户ID则只返回该用户的对话
+            conversations = get_chat_history(user_id)
             return jsonify(conversations)
     except Exception as e:
         print(f"获取历史请求失败: {e}")
@@ -78,6 +82,7 @@ def handle_delete_history():
     
     查询参数:
     conversation_id: 可选，对话ID，如果提供则删除该对话，否则清除所有对话历史
+    user_id: 可选，用户ID，如果提供则只删除该用户的对话历史
     
     响应:
     {
@@ -86,13 +91,14 @@ def handle_delete_history():
     """
     try:
         conversation_id = request.args.get('conversation_id')
+        user_id = request.args.get('user_id')  # 获取用户ID
         
         if conversation_id:
-            # 删除指定对话
-            success = delete_conversation(conversation_id)
+            # 删除指定对话，如果提供了用户ID则只删除该用户的对话
+            success = delete_conversation(conversation_id, user_id)
         else:
-            # 清除所有对话历史
-            success = clear_all_history()
+            # 清除对话历史，如果提供了用户ID则只清除该用户的对话历史
+            success = clear_all_history(user_id)
         
         return jsonify({'success': success})
     except Exception as e:

@@ -1,12 +1,16 @@
 import datetime
 import uuid
+import random
 from services.db_service import get_db
 from services.vector_store import get_vector_store
 from services.llm_service import generate_answer
 
-def get_chat_history():
-    """获取所有对话历史
+def get_chat_history(user_id=None):
+    """获取对话历史
     
+    Args:
+        user_id: 用户ID，可选，如果提供则只返回该用户的对话
+        
     Returns:
         对话历史列表
     """
@@ -14,8 +18,11 @@ def get_chat_history():
         db = get_db()
         conversations = db['conversations']
         
-        # 获取所有对话，按时间倒序排列
-        result = list(conversations.find().sort('created_at', -1))
+        # 如果提供了用户ID，则只获取该用户的对话
+        query = {'user_id': user_id} if user_id else {}
+        
+        # 获取对话，按时间倒序排列
+        result = list(conversations.find(query).sort('created_at', -1))
         
         # 将ObjectId转换为字符串
         for conv in result:
@@ -51,11 +58,12 @@ def get_conversation_messages(conversation_id):
         print(f"获取对话消息失败: {e}")
         return []
 
-def create_conversation(title):
+def create_conversation(title, user_id=None):
     """创建新对话
     
     Args:
         title: 对话标题
+        user_id: 用户ID，可选
         
     Returns:
         新创建的对话ID
@@ -68,6 +76,7 @@ def create_conversation(title):
         conversation = {
             '_id': str(uuid.uuid4()),
             'title': title,
+            'user_id': user_id,  # 添加用户ID
             'created_at': datetime.datetime.now(),
             'updated_at': datetime.datetime.now()
         }
@@ -79,13 +88,14 @@ def create_conversation(title):
         print(f"创建对话失败: {e}")
         return None
 
-def save_message(conversation_id, content, role):
+def save_message(conversation_id, content, role, user_id=None):
     """保存消息
     
     Args:
         conversation_id: 对话ID
         content: 消息内容
         role: 角色（user或assistant）
+        user_id: 用户ID，可选
         
     Returns:
         保存的消息ID
@@ -101,6 +111,7 @@ def save_message(conversation_id, content, role):
             'conversation_id': conversation_id,
             'content': content,
             'role': role,
+            'user_id': user_id,  # 添加用户ID
             'timestamp': datetime.datetime.now()
         }
         
@@ -117,11 +128,12 @@ def save_message(conversation_id, content, role):
         print(f"保存消息失败: {e}")
         return None
 
-def delete_conversation(conversation_id):
+def delete_conversation(conversation_id, user_id=None):
     """删除对话及其所有消息
     
     Args:
         conversation_id: 对话ID
+        user_id: 用户ID，可选，如果提供则只删除该用户的对话
         
     Returns:
         是否删除成功
@@ -131,8 +143,17 @@ def delete_conversation(conversation_id):
         conversations = db['conversations']
         messages = db['messages']
         
+        # 构建查询条件，如果提供了用户ID，则只删除该用户的对话
+        query = {'_id': conversation_id}
+        if user_id:
+            query['user_id'] = user_id
+        
         # 删除对话
-        conversations.delete_one({'_id': conversation_id})
+        result = conversations.delete_one(query)
+        
+        # 如果没有找到匹配的对话，返回False
+        if result.deleted_count == 0:
+            return False
         
         # 删除对话的所有消息
         messages.delete_many({'conversation_id': conversation_id})
@@ -142,9 +163,12 @@ def delete_conversation(conversation_id):
         print(f"删除对话失败: {e}")
         return False
 
-def clear_all_history():
-    """清除所有对话历史
+def clear_all_history(user_id=None):
+    """清除对话历史
     
+    Args:
+        user_id: 用户ID，可选，如果提供则只清除该用户的对话历史
+        
     Returns:
         是否清除成功
     """
@@ -153,21 +177,33 @@ def clear_all_history():
         conversations = db['conversations']
         messages = db['messages']
         
-        # 删除所有对话和消息
-        conversations.delete_many({})
-        messages.delete_many({})
+        # 如果提供了用户ID，则只清除该用户的对话历史
+        query = {'user_id': user_id} if user_id else {}
+        
+        # 获取要删除的对话ID列表
+        conversation_ids = [conv['_id'] for conv in conversations.find(query, {'_id': 1})]
+        
+        # 删除对话
+        conversations.delete_many(query)
+        
+        # 删除对话的所有消息
+        if conversation_ids:
+            messages.delete_many({'conversation_id': {'$in': conversation_ids}})
+        elif not user_id:  # 如果没有提供用户ID，则删除所有消息
+            messages.delete_many({})
         
         return True
     except Exception as e:
         print(f"清除所有对话历史失败: {e}")
         return False
 
-def process_question(question, conversation_id=None):
+def process_question(question, conversation_id=None, user_id=None):
     """处理用户问题
     
     Args:
         question: 用户问题
         conversation_id: 对话ID，如果为None则创建新对话
+        user_id: 用户ID，可选
         
     Returns:
         回答内容和对话ID
@@ -190,11 +226,11 @@ def process_question(question, conversation_id=None):
         if conversation_id is None:
             # 创建新对话，使用问题的前20个字符作为标题
             title = question[:20] + "..." if len(question) > 20 else question
-            conversation_id = create_conversation(title)
+            conversation_id = create_conversation(title, user_id)
         
         # 保存用户问题和系统回答
-        save_message(conversation_id, question, 'user')
-        save_message(conversation_id, answer, 'assistant')
+        save_message(conversation_id, question, 'user', user_id)
+        save_message(conversation_id, answer, 'assistant', user_id)
         
         return {
             'answer': answer,
@@ -222,6 +258,8 @@ def get_suggestions():
             "学校的师资力量如何？",
             "学校有哪些荣誉？"
         ]
+
+        suggestions = random.sample(suggestions,3)
         
         return {
             'suggestions': suggestions

@@ -20,7 +20,14 @@ def init_vector_store():
     global vector_store
     try:
         # 初始化向量模型
-        embeddings = HuggingFaceEmbeddings(model_name=Config.EMBEDDING_MODEL)
+        # 设置本地缓存路径和只从本地加载的参数
+        model_cache_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../model_cache")
+        os.makedirs(model_cache_dir, exist_ok=True)
+        embeddings = HuggingFaceEmbeddings(
+            model_name=Config.EMBEDDING_MODEL,
+            # cache_folder=model_cache_dir,  # 指定本地缓存路径
+            model_kwargs={"local_files_only": True}  # 只从本地加载模型
+        )
         
         # 检查本地向量存储目录是否存在
         if os.path.exists(VECTOR_STORE_DIR) and os.path.isdir(VECTOR_STORE_DIR) and len(os.listdir(VECTOR_STORE_DIR)) > 0:

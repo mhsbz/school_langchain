@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 # 导入自定义模块
 from config import Config
 from routes.chat_routes import chat_bp
+from routes.user_routes import user_bp
 from services.db_service import init_db
 from services.vector_store import init_vector_store
 
@@ -20,6 +21,7 @@ def create_app():
     
     # 注册蓝图
     app.register_blueprint(chat_bp, url_prefix='/api/chat')
+    app.register_blueprint(user_bp, url_prefix='/api/user')
     
     # 初始化数据库连接
     init_db()
