@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: school-backend
     ports:
-      - "5000:5000"
+      - "5001:5001"
     volumes:
       - ./backend:/app
       - ./backend/data:/app/data

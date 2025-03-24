@@ -98,7 +98,7 @@ export default {
       
       try {
         // 登录请求
-        const response = await axios.post('http://localhost:5000/api/user/login', {
+        const response = await axios.post('http://localhost:5001/api/user/login', {
           phone: this.phone
         });
         

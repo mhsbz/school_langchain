@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua
 COPY . .
 
 # 暴露端口
-EXPOSE 5000
+EXPOSE 5001
 
 # 启动应用
 CMD ["python", "app.py"]

@@ -72,7 +72,7 @@ CHUNK_OVERLAP=200
 python app.py
 ```
 
-服务将在 http://localhost:5000 上运行。
+服务将在 http://localhost:5001 上运行。
 
 ### 使用Docker Compose启动
 
