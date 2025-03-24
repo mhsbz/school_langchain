@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: 'http://localhost:5000',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
@@ -33,7 +33,17 @@ const chatApi = {
   // 获取聊天历史
   getChatHistory: async () => {
     try {
-      const response = await api.get('/api/chat/history');
+      // 从localStorage获取当前用户信息
+      const userStr = localStorage.getItem('user');
+      let userId = null;
+      
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        userId = user.user_id;
+      }
+      
+      // 添加user_id参数到请求URL
+      const response = await api.get(`/api/chat/history${userId ? `?user_id=${userId}` : ''}`);
       return response.data;
     } catch (error) {
       console.error('获取聊天历史失败:', error);

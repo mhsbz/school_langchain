@@ -1,4 +1,5 @@
 services:
+  # MongoDB服务
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -10,6 +11,54 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
     restart: unless-stopped
+    networks:
+      - app-network
+
+  # 后端服务
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: school-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - ./backend/data:/app/data
+      - ./backend/vector_store:/app/vector_store
+      - ./backend/model_cache:/app/model_cache
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongodb:27017
+      - MONGO_DB_NAME=school_chat
+      - VECTOR_STORE_DIR=/app/vector_store
+      - EMBEDDING_MODEL=/app/model_cache
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # 前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: school-frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   mongodb_data:

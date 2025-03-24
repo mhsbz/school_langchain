@@ -220,7 +220,17 @@ export default {
     },
     async loadConversationMessages(conversationId) {
       try {
-        const response = await fetch(`http://localhost:3000/api/chat/history?conversation_id=${conversationId}`);
+        // 从localStorage获取当前用户信息
+        const userStr = localStorage.getItem('user');
+        let userId = null;
+        
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          userId = user.user_id;
+        }
+        
+        // 添加user_id参数到请求URL
+        const response = await fetch(`http://localhost:5000/api/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`);
         const messages = await response.json();
         return messages.map(msg => ({
           content: msg.content,
@@ -247,7 +257,17 @@ export default {
       // 删除历史对话
       const conversationId = this.chatHistory[index].id;
       try {
-        await fetch(`http://localhost:3000/api/chat/history?conversation_id=${conversationId}`, {
+        // 从localStorage获取当前用户信息
+        const userStr = localStorage.getItem('user');
+        let userId = null;
+        
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          userId = user.user_id;
+        }
+        
+        // 添加user_id参数到请求URL
+        await fetch(`http://localhost:5000/api/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`, {
           method: 'DELETE'
         });
         

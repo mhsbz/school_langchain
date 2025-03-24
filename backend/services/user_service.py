@@ -63,29 +63,44 @@ def register_user(username, phone, password):
         print(f"注册用户失败: {e}")
         return {'success': False, 'message': '服务器内部错误'}
 
-def login_user(phone, password):
+def login_user(phone, password=None):
     """
-    用户登录
+    用户登录（简化版）
     
     Args:
         phone: 手机号
-        password: 密码
+        password: 密码（可选，不再验证）
         
     Returns:
         成功返回用户信息，失败返回错误信息
     """
     try:
+        # 验证手机号格式
+        if not validate_phone(phone):
+            return {'success': False, 'message': '手机号格式不正确'}
+            
         db = get_db()
         users = db['users']
         
         # 查找用户
         user = users.find_one({'phone': phone})
-        if not user:
-            return {'success': False, 'message': '用户不存在'}
         
-        # 验证密码
-        if user['password'] != hash_password(password):
-            return {'success': False, 'message': '密码错误'}
+        # 如果用户不存在，自动创建新用户
+        if not user:
+            # 创建新用户
+            user_id = str(uuid.uuid4())
+            username = f'用户_{phone[-4:]}' # 使用手机号后四位作为用户名
+            
+            user = {
+                '_id': user_id,
+                'username': username,
+                'phone': phone,
+                'password': hash_password('123456'), # 设置默认密码
+                'created_at': datetime.datetime.now(),
+                'updated_at': datetime.datetime.now()
+            }
+            
+            users.insert_one(user)
         
         # 返回用户信息（不包含密码）
         user_info = {

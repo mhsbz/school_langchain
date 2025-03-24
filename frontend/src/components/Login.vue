@@ -2,24 +2,10 @@
   <div class="login-container">
     <div class="login-box">
       <div class="login-header">
-        <h2>{{ isLogin ? '登录' : '注册' }}</h2>
+        <h2>登录</h2>
       </div>
       
       <div class="login-form">
-        <!-- 用户名输入框 (仅注册时显示) -->
-        <div class="form-item" v-if="!isLogin">
-          <label for="username" class="centered-label">用户名</label>
-          <div class="input-container">
-            <input 
-              type="text" 
-              id="username" 
-              v-model="username" 
-              placeholder="请输入用户名"
-              class="centered-input"
-            >
-          </div>
-          <div class="error-message" v-if="errors.username">{{ errors.username }}</div>
-        </div>
         
         <!-- 手机号输入框 -->
         <div class="form-item">
@@ -36,24 +22,11 @@
           <div class="error-message" v-if="errors.phone">{{ errors.phone }}</div>
         </div>
         
-        <!-- 密码输入框 -->
-        <div class="form-item">
-          <label for="password" class="centered-label">密码</label>
-          <div class="input-container">
-            <input 
-              type="password" 
-              id="password" 
-              v-model="password" 
-              placeholder="请输入密码"
-              class="centered-input"
-            >
-          </div>
-          <div class="error-message" v-if="errors.password">{{ errors.password }}</div>
-        </div>
+        <!-- 密码输入框已移除 -->
         
-        <!-- 登录/注册按钮 -->
+        <!-- 登录按钮 -->
         <div class="form-item button-container">
-          <button class="submit-button" @click="handleSubmit">{{ isLogin ? '登录' : '注册' }}</button>
+          <button class="submit-button" @click="handleSubmit">登录</button>
         </div>
         
         <!-- 全局错误/成功消息 -->
@@ -64,10 +37,7 @@
           <div class="success-message">{{ errors.success }}</div>
         </div>
         
-        <!-- 切换登录/注册 -->
-        <div class="switch-mode">
-          <span @click="toggleMode">{{ isLogin ? '没有账号？去注册' : '已有账号？去登录' }}</span>
-        </div>
+        <!-- 切换登录/注册已移除 -->
       </div>
     </div>
   </div>
@@ -80,35 +50,22 @@ export default {
   name: 'Login',
   data() {
     return {
-      isLogin: true,  // 默认显示登录页面
-      username: '',
       phone: '',
-      password: '',
       errors: {
-        username: '',
         phone: '',
-        password: '',
         general: '',
         success: ''
       }
     }
   },
   methods: {
-    // 切换登录/注册模式
-    toggleMode() {
-      this.isLogin = !this.isLogin;
-      this.clearForm();
-    },
-    
     // 清空表单
     clearForm() {
-      this.username = '';
       this.phone = '';
-      this.password = '';
       this.errors = {
-        username: '',
         phone: '',
-        password: ''
+        general: '',
+        success: ''
       };
     },
     
@@ -116,16 +73,10 @@ export default {
     validateForm() {
       let isValid = true;
       this.errors = {
-        username: '',
         phone: '',
-        password: ''
+        general: '',
+        success: ''
       };
-      
-      // 注册时验证用户名
-      if (!this.isLogin && !this.username.trim()) {
-        this.errors.username = '请输入用户名';
-        isValid = false;
-      }
       
       // 验证手机号
       if (!this.phone.trim()) {
@@ -136,60 +87,27 @@ export default {
         isValid = false;
       }
       
-      // 验证密码
-      if (!this.password) {
-        this.errors.password = '请输入密码';
-        isValid = false;
-      } else if (this.password.length < 6) {
-        this.errors.password = '密码长度不能少于6位';
-        isValid = false;
-      }
-      
       return isValid;
     },
     
-    // 处理登录/注册
+    // 处理登录
     async handleSubmit() {
       if (!this.validateForm()) {
         return;
       }
       
       try {
-        let response;
+        // 登录请求
+        const response = await axios.post('http://localhost:5000/api/user/login', {
+          phone: this.phone
+        });
         
-        if (this.isLogin) {
-          // 登录请求
-          response = await axios.post('http://localhost:3000/api/user/login', {
-            phone: this.phone,
-            password: this.password
-          });
+        if (response.data.success) {
+          // 保存用户信息到本地存储
+          localStorage.setItem('user', JSON.stringify(response.data.user));
           
-          if (response.data.success) {
-            // 保存用户信息到本地存储
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-            
-            // 跳转到首页
-            this.$router.push('/');
-          }
-        } else {
-          // 注册请求
-          response = await axios.post('http://localhost:3000/api/user/register', {
-            username: this.username,
-            phone: this.phone,
-            password: this.password
-          });
-          
-          if (response.data.success) {
-            // 注册成功，切换到登录页面
-            this.isLogin = true;
-            this.clearForm();
-            // 添加成功消息
-            this.errors.success = '注册成功，请登录';
-            // 3秒后清除成功消息
-            setTimeout(() => {
-              this.errors.success = '';
-            }, 3000);
-          }
+          // 跳转到首页
+          this.$router.push('/');
         }
       } catch (error) {
         console.error('请求失败:', error);

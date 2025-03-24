@@ -54,12 +54,11 @@ def handle_register():
 @user_bp.route('/login', methods=['POST'])
 def handle_login():
     """
-    处理用户登录
+    处理用户登录（简化版）
     
     请求体:
     {
-        "phone": "手机号",
-        "password": "密码"
+        "phone": "手机号"
     }
     
     响应:
@@ -83,14 +82,13 @@ def handle_login():
         data = request.get_json()
         
         # 验证请求数据
-        if not data or 'phone' not in data or 'password' not in data:
-            return jsonify({'success': False, 'message': '缺少必要参数'}), 400
+        if not data or 'phone' not in data:
+            return jsonify({'success': False, 'message': '缺少手机号参数'}), 400
         
         phone = data['phone']
-        password = data['password']
         
         # 调用登录服务
-        result = login_user(phone, password)
+        result = login_user(phone)
         
         if result['success']:
             return jsonify(result), 200
