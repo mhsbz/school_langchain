@@ -11,6 +11,7 @@ requests
 python-docx
 docx2txt
 sentence-transformers
+langchain-huggingface
 faiss-cpu
 bs4
 beautifulsoup4

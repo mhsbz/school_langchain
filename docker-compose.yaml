@@ -32,7 +32,8 @@ services:
       - MONGO_DB_NAME=school_chat
       - VECTOR_STORE_DIR=/app/vector_store
       - EMBEDDING_MODEL=/app/model_cache
-      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
+      - DEEPSEEK_API_KEY=sk-ffb4ab7b13654778baecf760b47634e9
+      - DEEPSEEK_API_URL=https://api.deepseek.com/chat/completions
     depends_on:
       - mongodb
     restart: unless-stopped
