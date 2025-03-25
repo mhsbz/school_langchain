@@ -7,8 +7,10 @@ from config import Config
 import os
 import pickle
 import shutil
+from utils.logger import vector_logger
 
-# 全局向量存储实例
+# 全局变量
+embeddings = None
 vector_store = None
 
 # 本地向量存储目录
@@ -16,13 +18,14 @@ VECTOR_STORE_DIR = "./vector_store"
 
 def init_vector_store():
     """初始化向量存储"""
-    print("正在初始化向量存储...")
-    global vector_store
+    vector_logger.info("正在初始化向量存储...")
+    global embeddings, vector_store
     try:
         # 初始化向量模型
         # 设置本地缓存路径和只从本地加载的参数
         model_cache_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../model_cache")
         os.makedirs(model_cache_dir, exist_ok=True)
+        vector_logger.info(f"正在加载嵌入模型: {Config.EMBEDDING_MODEL}")
         embeddings = HuggingFaceEmbeddings(
             model_name=Config.EMBEDDING_MODEL,
             # cache_folder=model_cache_dir,  # 指定本地缓存路径
@@ -30,14 +33,15 @@ def init_vector_store():
         )
         
         # 检查本地向量存储目录是否存在
+        vector_logger.info(f"检查向量存储目录: {VECTOR_STORE_DIR}")
         if os.path.exists(VECTOR_STORE_DIR) and os.path.isdir(VECTOR_STORE_DIR) and len(os.listdir(VECTOR_STORE_DIR)) > 0:
             # 如果向量存储目录存在且不为空，直接从本地加载
-            print(f"本地向量存储目录 {VECTOR_STORE_DIR} 已存在，正在加载...")
+            vector_logger.info(f"本地向量存储目录 {VECTOR_STORE_DIR} 已存在，正在加载...")
             try:
                 vector_store = FAISS.load_local(VECTOR_STORE_DIR, embeddings, allow_dangerous_deserialization=True)
-                print("从本地加载向量存储成功")
+                vector_logger.info("从本地加载向量存储成功")
             except Exception as load_error:
-                print(f"从本地加载向量存储失败: {load_error}，将重新创建")
+                vector_logger.error(f"从本地加载向量存储失败: {load_error}，将重新创建", exc_info=True)
                 # 如果加载失败，清空目录并重新创建
                 shutil.rmtree(VECTOR_STORE_DIR, ignore_errors=True)
                 os.makedirs(VECTOR_STORE_DIR, exist_ok=True)
@@ -47,17 +51,17 @@ def init_vector_store():
                 load_knowledge_base(vector_store, embeddings)
         else:
             # 如果向量存储目录不存在或为空，创建并加载知识库
-            print(f"本地向量存储目录 {VECTOR_STORE_DIR} 不存在或为空，正在创建并加载知识库...")
+            vector_logger.warning(f"本地向量存储目录 {VECTOR_STORE_DIR} 不存在或为空，正在创建并加载知识库...")
             os.makedirs(VECTOR_STORE_DIR, exist_ok=True)
             vector_store = FAISS.from_texts(["初始化文档"], embeddings)
             vector_store.save_local(VECTOR_STORE_DIR)
             # 加载知识库
             load_knowledge_base(vector_store, embeddings)
         
-        print("向量存储初始化成功")
+        vector_logger.info("向量存储初始化成功")
         return True
     except Exception as e:
-        print(f"向量存储初始化失败: {e}")
+        vector_logger.error(f"向量存储初始化失败: {e}", exc_info=True)
         return False
 
 def load_knowledge_base(vector_store, embeddings):

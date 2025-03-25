@@ -1,5 +1,6 @@
 import pymongo
 from config import Config
+from utils.logger import db_logger
 
 # 全局MongoDB客户端和数据库实例
 mongo_client = None

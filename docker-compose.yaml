@@ -27,6 +27,7 @@ services:
       - ./backend/data:/app/data
       - ./backend/vector_store:/app/vector_store
       - ./backend/model_cache:/app/model_cache
+      - ./backend/logs:/app/logs
     environment:
       - MONGO_URI=mongodb://admin:password@mongodb:27017
       - MONGO_DB_NAME=school_chat

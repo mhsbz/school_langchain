@@ -1,6 +1,7 @@
 import requests
 import json
 from config import Config
+from utils.logger import llm_logger
 
 def generate_answer(question, context):
     """调用DeepSeek API生成回答

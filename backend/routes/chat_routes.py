@@ -7,6 +7,7 @@ from services.chat_service import (
     clear_all_history,
     get_suggestions
 )
+from utils.logger import chat_logger
 
 # 创建蓝图
 chat_bp = Blueprint('chat', __name__)
@@ -33,19 +34,25 @@ def handle_question():
         
         # 验证请求数据
         if not data or 'question' not in data:
+            chat_logger.warning('请求缺少必要参数')
             return jsonify({'error': '缺少必要参数'}), 400
         
         question = data['question']
         conversation_id = data.get('conversation_id')
         user_id = data.get('user_id')  # 获取用户ID
         
+        # 记录请求日志
+        chat_logger.info(f'收到问题请求: user_id={user_id}, conversation_id={conversation_id}, question={question[:30]}...')
+        
         # 处理问题
         result = process_question(question, conversation_id, user_id)
-        print(result)
+        
+        # 记录响应日志
+        chat_logger.info(f'问题处理完成: conversation_id={result.get("conversation_id")}')
         
         return jsonify(result)
     except Exception as e:
-        print(f"处理问题请求失败: {e}")
+        chat_logger.error(f"处理问题请求失败: {e}", exc_info=True)
         return jsonify({'error': '服务器内部错误'}), 500
 
 @chat_bp.route('/history', methods=['GET'])

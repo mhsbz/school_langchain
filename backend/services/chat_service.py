@@ -4,6 +4,8 @@ import random
 from services.db_service import get_db
 from services.vector_store import get_vector_store
 from services.llm_service import generate_answer
+from utils import app_logger
+from utils.logger import chat_logger
 
 def get_chat_history(user_id=None):
     """获取对话历史
@@ -237,7 +239,8 @@ def process_question(question, conversation_id=None, user_id=None):
             'conversation_id': conversation_id
         }
     except Exception as e:
-        print(f"处理问题失败: {e}")
+        # 记录错误日志
+        app_logger.error(f"处理问题失败: {e}")
         return {
             'answer': "抱歉，处理您的问题时出现错误，请稍后再试。",
             'conversation_id': conversation_id
