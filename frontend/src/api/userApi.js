@@ -4,8 +4,8 @@ import axios from 'axios';
 const api = axios.create({
   // baseURL: 'http://backend:5001/api',
   // baseURL: 'http://localhost:5001/api',
-  baseURL: 'api',
-  // baseURL: 'http://39.107.159.184:5001/api',
+  // baseURL: 'api',
+  baseURL: 'http://39.107.159.184:5001/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
