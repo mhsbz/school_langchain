@@ -6,3 +6,4 @@ node_modules/
 **/__pycache__/
 backend/data/
 backend/model_cache/
+*.DS_Store
