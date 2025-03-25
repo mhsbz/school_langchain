@@ -230,7 +230,7 @@ export default {
         }
         
         // 添加user_id参数到请求URL
-        const response = await fetch(`http://localhost:5001/api/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`);
+        const response = await fetch(`http://39.107.159.184:5001/api/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`);
         const messages = await response.json();
         return messages.map(msg => ({
           content: msg.content,
@@ -267,7 +267,7 @@ export default {
         }
         
         // 添加user_id参数到请求URL
-        await fetch(`http://localhost:5001/api/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`, {
+        await fetch(`http://39.107.159.184:5001/api/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`, {
           method: 'DELETE'
         });
         
