@@ -43,7 +43,7 @@ const chatApi = {
       }
       
       // 添加user_id参数到请求URL
-      const response = await api.get(`/api/chat/history${userId ? `?user_id=${userId}` : ''}`);
+      const response = await api.get(`/chat/history${userId ? `?user_id=${userId}` : ''}`);
       return response.data;
     } catch (error) {
       console.error('获取聊天历史失败:', error);
@@ -62,7 +62,7 @@ const chatApi = {
         data.user_id = user.user_id;
       }
       
-      const response = await api.post('/api/chat/question', data);
+      const response = await api.post('/chat/question', data);
       console.log("sendQuestion response",response)
       return response.data;
     } catch (error) {
@@ -74,7 +74,7 @@ const chatApi = {
   // 清除聊天历史
   clearChatHistory: async () => {
     try {
-      const response = await api.delete('/api/chat/history');
+      const response = await api.delete('/chat/history');
       return response.data;
     } catch (error) {
       console.error('清除聊天历史失败:', error);
@@ -85,7 +85,7 @@ const chatApi = {
   // 获取推荐问题
   getSuggestions: async () => {
     try {
-      const response = await api.get('/api/chat/suggestions');
+      const response = await api.get('/chat/suggestions');
       return response.data;
     } catch (error) {
       console.error('获取推荐问题失败:', error);

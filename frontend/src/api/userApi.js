@@ -14,7 +14,7 @@ const userApi = {
   // 用户注册
   register: async (userData) => {
     try {
-      const response = await api.post('/api/user/register', userData);
+      const response = await api.post('/user/register', userData);
       return response.data;
     } catch (error) {
       console.error('注册失败:', error);
@@ -25,7 +25,7 @@ const userApi = {
   // 用户登录
   login: async (credentials) => {
     try {
-      const response = await api.post('/api/user/login', credentials);
+      const response = await api.post('/user/login', credentials);
       return response.data;
     } catch (error) {
       console.error('登录失败:', error);
