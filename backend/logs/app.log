@@ -1,54 +1,12 @@
-2025-03-25 09:40:19,831 - app - INFO - 应用启动成功
-2025-03-25 09:40:19,832 - app - INFO - 服务运行在 http://0.0.0.0:5001
-2025-03-25 09:40:19,832 - app - INFO - 环境: 生产
-2025-03-25 09:40:19,832 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
-2025-03-25 09:40:19,832 - app - INFO - 向量模型: /app/model_cache
-2025-03-25 09:40:19,832 - app - INFO - 数据目录: ./data
-2025-03-25 09:40:31,470 - app - INFO - 应用启动成功
-2025-03-25 09:40:31,471 - app - INFO - 服务运行在 http://0.0.0.0:5001
-2025-03-25 09:40:31,472 - app - INFO - 环境: 生产
-2025-03-25 09:40:31,472 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
-2025-03-25 09:40:31,472 - app - INFO - 向量模型: /app/model_cache
-2025-03-25 09:40:31,473 - app - INFO - 数据目录: ./data
-2025-03-25 09:42:54,731 - app - INFO - 应用启动成功
-2025-03-25 09:42:54,736 - app - INFO - 服务运行在 http://0.0.0.0:5001
-2025-03-25 09:42:54,737 - app - INFO - 环境: 生产
-2025-03-25 09:42:54,737 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
-2025-03-25 09:42:54,737 - app - INFO - 向量模型: /app/model_cache
-2025-03-25 09:42:54,737 - app - INFO - 数据目录: ./data
-2025-03-25 10:05:59,793 - app - INFO - 应用启动成功
-2025-03-25 10:05:59,793 - app - INFO - 服务运行在 http://0.0.0.0:5001
-2025-03-25 10:05:59,793 - app - INFO - 环境: 生产
-2025-03-25 10:05:59,794 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
-2025-03-25 10:05:59,794 - app - INFO - 向量模型: /app/model_cache
-2025-03-25 10:05:59,794 - app - INFO - 数据目录: ./data
-2025-03-25 10:06:07,436 - app - INFO - 应用启动成功
-2025-03-25 10:06:07,436 - app - INFO - 服务运行在 http://0.0.0.0:5001
-2025-03-25 10:06:07,436 - app - INFO - 环境: 生产
-2025-03-25 10:06:07,437 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
-2025-03-25 10:06:07,437 - app - INFO - 向量模型: /app/model_cache
-2025-03-25 10:06:07,437 - app - INFO - 数据目录: ./data
-2025-03-25 10:08:39,000 - app - INFO - 应用启动成功
-2025-03-25 10:08:39,000 - app - INFO - 服务运行在 http://0.0.0.0:5001
-2025-03-25 10:08:39,000 - app - INFO - 环境: 生产
-2025-03-25 10:08:39,000 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
-2025-03-25 10:08:39,000 - app - INFO - 向量模型: /app/model_cache
-2025-03-25 10:08:39,000 - app - INFO - 数据目录: ./data
-2025-03-25 10:08:46,241 - app - INFO - 应用启动成功
-2025-03-25 10:08:46,241 - app - INFO - 服务运行在 http://0.0.0.0:5001
-2025-03-25 10:08:46,241 - app - INFO - 环境: 生产
-2025-03-25 10:08:46,242 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
-2025-03-25 10:08:46,242 - app - INFO - 向量模型: /app/model_cache
-2025-03-25 10:08:46,242 - app - INFO - 数据目录: ./data
-2025-03-25 10:09:51,679 - app - INFO - 应用启动成功
-2025-03-25 10:09:51,679 - app - INFO - 服务运行在 http://0.0.0.0:5001
-2025-03-25 10:09:51,679 - app - INFO - 环境: 生产
-2025-03-25 10:09:51,679 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
-2025-03-25 10:09:51,680 - app - INFO - 向量模型: /app/model_cache
-2025-03-25 10:09:51,680 - app - INFO - 数据目录: ./data
-2025-03-25 10:09:59,206 - app - INFO - 应用启动成功
-2025-03-25 10:09:59,206 - app - INFO - 服务运行在 http://0.0.0.0:5001
-2025-03-25 10:09:59,207 - app - INFO - 环境: 生产
-2025-03-25 10:09:59,207 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
-2025-03-25 10:09:59,207 - app - INFO - 向量模型: /app/model_cache
-2025-03-25 10:09:59,207 - app - INFO - 数据目录: ./data
+2025-03-26 04:06:44,470 - app - INFO - 应用启动成功
+2025-03-26 04:06:44,471 - app - INFO - 服务运行在 http://0.0.0.0:5001
+2025-03-26 04:06:44,471 - app - INFO - 环境: 生产
+2025-03-26 04:06:44,471 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
+2025-03-26 04:06:44,471 - app - INFO - 向量模型: /app/model_cache
+2025-03-26 04:06:44,471 - app - INFO - 数据目录: ./data
+2025-03-26 04:06:53,719 - app - INFO - 应用启动成功
+2025-03-26 04:06:53,719 - app - INFO - 服务运行在 http://0.0.0.0:5001
+2025-03-26 04:06:53,719 - app - INFO - 环境: 生产
+2025-03-26 04:06:53,719 - app - INFO - MongoDB URI: mongodb://admin:password@mongodb:27017
+2025-03-26 04:06:53,719 - app - INFO - 向量模型: /app/model_cache
+2025-03-26 04:06:53,719 - app - INFO - 数据目录: ./data

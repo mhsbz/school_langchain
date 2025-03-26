@@ -1,66 +1,12 @@
-2025-03-25 18:05:43,332 - vector - INFO - 正在初始化向量存储...
-2025-03-25 18:05:43,333 - vector - INFO - 正在加载嵌入模型: ./model_cache
-2025-03-25 10:05:52,732 - vector - INFO - 正在初始化向量存储...
-2025-03-25 10:05:52,733 - vector - INFO - 正在加载嵌入模型: /app/model_cache
-2025-03-25 10:05:59,660 - vector - ERROR - 向量存储初始化失败: [Errno 2] No such file or directory: '/app/model_cache/1_Pooling/config.json'
-Traceback (most recent call last):
-  File "/app/services/vector_store.py", line 29, in init_vector_store
-    embeddings = HuggingFaceEmbeddings(
-                 ^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/langchain_huggingface/embeddings/huggingface.py", line 59, in __init__
-    self._client = sentence_transformers.SentenceTransformer(
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/sentence_transformers/SentenceTransformer.py", line 308, in __init__
-    modules, self.module_kwargs = self._load_sbert_model(
-                                  ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/sentence_transformers/SentenceTransformer.py", line 1755, in _load_sbert_model
-    module = module_class.load(module_path)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/sentence_transformers/models/Pooling.py", line 257, in load
-    with open(os.path.join(input_path, "config.json")) as fIn:
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: '/app/model_cache/1_Pooling/config.json'
-2025-03-25 10:06:00,504 - vector - INFO - 正在初始化向量存储...
-2025-03-25 10:06:00,504 - vector - INFO - 正在加载嵌入模型: /app/model_cache
-2025-03-25 10:06:07,300 - vector - ERROR - 向量存储初始化失败: [Errno 2] No such file or directory: '/app/model_cache/1_Pooling/config.json'
-Traceback (most recent call last):
-  File "/app/services/vector_store.py", line 29, in init_vector_store
-    embeddings = HuggingFaceEmbeddings(
-                 ^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/langchain_huggingface/embeddings/huggingface.py", line 59, in __init__
-    self._client = sentence_transformers.SentenceTransformer(
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/sentence_transformers/SentenceTransformer.py", line 308, in __init__
-    modules, self.module_kwargs = self._load_sbert_model(
-                                  ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/sentence_transformers/SentenceTransformer.py", line 1755, in _load_sbert_model
-    module = module_class.load(module_path)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/sentence_transformers/models/Pooling.py", line 257, in load
-    with open(os.path.join(input_path, "config.json")) as fIn:
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: '/app/model_cache/1_Pooling/config.json'
-2025-03-25 10:08:32,726 - vector - INFO - 正在初始化向量存储...
-2025-03-25 10:08:32,726 - vector - INFO - 正在加载嵌入模型: /app/model_cache
-2025-03-25 10:08:38,969 - vector - INFO - 检查向量存储目录: ./vector_store
-2025-03-25 10:08:38,970 - vector - INFO - 本地向量存储目录 ./vector_store 已存在，正在加载...
-2025-03-25 10:08:38,999 - vector - INFO - 从本地加载向量存储成功
-2025-03-25 10:08:39,000 - vector - INFO - 向量存储初始化成功
-2025-03-25 10:08:39,609 - vector - INFO - 正在初始化向量存储...
-2025-03-25 10:08:39,609 - vector - INFO - 正在加载嵌入模型: /app/model_cache
-2025-03-25 10:08:46,216 - vector - INFO - 检查向量存储目录: ./vector_store
-2025-03-25 10:08:46,217 - vector - INFO - 本地向量存储目录 ./vector_store 已存在，正在加载...
-2025-03-25 10:08:46,241 - vector - INFO - 从本地加载向量存储成功
-2025-03-25 10:08:46,241 - vector - INFO - 向量存储初始化成功
-2025-03-25 10:09:44,346 - vector - INFO - 正在初始化向量存储...
-2025-03-25 10:09:44,346 - vector - INFO - 正在加载嵌入模型: /app/model_cache
-2025-03-25 10:09:51,642 - vector - INFO - 检查向量存储目录: ./vector_store
-2025-03-25 10:09:51,643 - vector - INFO - 本地向量存储目录 ./vector_store 已存在，正在加载...
-2025-03-25 10:09:51,679 - vector - INFO - 从本地加载向量存储成功
-2025-03-25 10:09:51,679 - vector - INFO - 向量存储初始化成功
-2025-03-25 10:09:52,386 - vector - INFO - 正在初始化向量存储...
-2025-03-25 10:09:52,386 - vector - INFO - 正在加载嵌入模型: /app/model_cache
-2025-03-25 10:09:59,184 - vector - INFO - 检查向量存储目录: ./vector_store
-2025-03-25 10:09:59,185 - vector - INFO - 本地向量存储目录 ./vector_store 已存在，正在加载...
-2025-03-25 10:09:59,206 - vector - INFO - 从本地加载向量存储成功
-2025-03-25 10:09:59,206 - vector - INFO - 向量存储初始化成功
+2025-03-26 04:06:32,903 - vector - INFO - 正在初始化向量存储...
+2025-03-26 04:06:32,904 - vector - INFO - 正在加载嵌入模型: /app/model_cache
+2025-03-26 04:06:44,322 - vector - INFO - 检查向量存储目录: ./vector_store
+2025-03-26 04:06:44,323 - vector - INFO - 本地向量存储目录 ./vector_store 已存在，正在加载...
+2025-03-26 04:06:44,469 - vector - INFO - 从本地加载向量存储成功
+2025-03-26 04:06:44,469 - vector - INFO - 向量存储初始化成功
+2025-03-26 04:06:45,309 - vector - INFO - 正在初始化向量存储...
+2025-03-26 04:06:45,309 - vector - INFO - 正在加载嵌入模型: /app/model_cache
+2025-03-26 04:06:53,699 - vector - INFO - 检查向量存储目录: ./vector_store
+2025-03-26 04:06:53,700 - vector - INFO - 本地向量存储目录 ./vector_store 已存在，正在加载...
+2025-03-26 04:06:53,719 - vector - INFO - 从本地加载向量存储成功
+2025-03-26 04:06:53,719 - vector - INFO - 向量存储初始化成功

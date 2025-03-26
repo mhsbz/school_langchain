@@ -7,3 +7,4 @@ node_modules/
 backend/data/
 backend/model_cache/
 *.DS_Store
+backend/logs/
