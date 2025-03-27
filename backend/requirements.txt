@@ -16,3 +16,4 @@ faiss-cpu
 bs4
 beautifulsoup4
 pytz
+openai
