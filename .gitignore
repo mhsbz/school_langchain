@@ -4,7 +4,7 @@ node_modules/
 .idea
 .vscode
 **/__pycache__/
-backend/data/
+# backend/data/
 backend/model_cache/
 *.DS_Store
 backend/logs/
