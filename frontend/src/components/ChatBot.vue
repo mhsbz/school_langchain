@@ -455,7 +455,7 @@ export default {
 
 .new-chat-span {
   color: white;
-  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-size: 24px;
   font-weight: bold;
   line-height: 1;
 }
@@ -464,17 +464,10 @@ export default {
 .drawer {
   position: fixed;
   top: 0;
-  left: -100%;
+  left: -85%;
   width: 85%;
-  max-width: 300px;
   height: 100%;
   background-color: #f8f8f8;
-  transition: left 0.3s ease;
-
-  @media (max-width: 480px) {
-    width: 100%;
-    max-width: none;
-  }
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   transition: left 0.3s ease;
@@ -503,7 +496,7 @@ export default {
 }
 
 .close-drawer {
-  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-size: 24px;
   cursor: pointer;
   color: #333;
   width: 24px;
@@ -645,12 +638,11 @@ export default {
 .chat-content {
   flex: 1;
   overflow-y: auto;
-  padding: 0 1rem 120px;
+  padding: 15px;
+  padding-bottom: 120px;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  max-width: min(90%, 800px);
-  margin: 0 auto;
 }
 
 .message-container {
@@ -697,10 +689,6 @@ export default {
   border-radius: 4px 18px 18px 18px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   align-self: flex-start;
-}
-
-.bot-message .message-content {
-  text-align: left;
 }
 
 .feedback-buttons {

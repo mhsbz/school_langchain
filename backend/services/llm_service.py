@@ -41,21 +41,25 @@ def intention_recognition(question, history=None) -> dict:
 
 ## 输出格式
 始终返回JSON格式：
-{
+{example}"""
+
+    example = """{
     "need_retrieval": true/false,
     "reason": "分类理由",
     "rewritten_query": "优化后的查询(如有需要则填写，不需要则为空)",
     "direct_answer": "如果不需要检索，这里提供直接回答；需要检索则为空"
-}"""
+}
+    """
 
     res = call_deepseek([{
         "role": "user",
         "content": prompt.format(
             history_text="\n".join([f"{msg['role']}: {msg['content']}" for msg in history]) if history else "无",
-            current_question=question
+            current_question=question,
+            example=example
         )
     }])
-
+    res = res.replace("```json", "").replace("```", "").strip().strip("\n")
     json_data = json.loads(res)
 
     return json_data
