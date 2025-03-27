@@ -8,3 +8,4 @@ node_modules/
 backend/model_cache/
 *.DS_Store
 backend/logs/
+backend/vector_store/

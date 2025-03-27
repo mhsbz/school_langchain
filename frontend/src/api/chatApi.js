@@ -45,7 +45,7 @@ const chatApi = {
       }
       
       // 添加user_id参数到请求URL
-      const response = await api.get(`/chat/messages?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`);
+      const response = await api.get(`/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`);
       return response.data;
     } catch (error) {
       console.error('获取对话消息失败:', error);
