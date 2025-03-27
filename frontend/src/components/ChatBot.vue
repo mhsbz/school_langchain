@@ -75,7 +75,7 @@
             <img src="@/assets/images/机器人头像.png" alt="机器人" class="robot-avatar">
           </div>
           <div class="message bot-message">
-            <div class="message-content">{{ message.content }}</div>
+            <div class="message-content" style="text-align: left;">{{ message.content }}</div>
           </div>
         </template>
       </div>
@@ -127,13 +127,6 @@
           v-model="inputMessage" 
           placeholder="请输入您的问题"
           @keyup.enter="sendMessage"
-        >
-        <img 
-          v-if="inputMessage.length > 0" 
-          src="@/assets/images/清除图标.png" 
-          alt="清除" 
-          class="clear-icon"
-          @click="clearInput"
         >
       </div>
       <div class="send-button" @click="sendMessage">

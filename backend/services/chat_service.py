@@ -239,6 +239,7 @@ def process_question(question, conversation_id=None, user_id=None):
             retriever = vector_store.as_retriever(search_kwargs={"k": 3})
             # 如果有优化后的查询，则使用优化后的查询进行检索
             search_query = intention_result.get("rewritten_query", "") or question
+            chat_logger.info(f"检索查询: {search_query}")
             docs = retriever.get_relevant_documents(search_query)
             
             # 合并上下文
