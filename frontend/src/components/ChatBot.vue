@@ -220,18 +220,7 @@ export default {
     },
     async loadConversationMessages(conversationId) {
       try {
-        // 从localStorage获取当前用户信息
-        const userStr = localStorage.getItem('user');
-        let userId = null;
-        
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          userId = user.user_id;
-        }
-        
-        // 添加user_id参数到请求URL
-        const response = await fetch(`http://39.107.159.184:5001/api/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`);
-        const messages = await response.json();
+        const messages = await chatApi.getConversationMessages(conversationId);
         return messages.map(msg => ({
           content: msg.content,
           type: msg.role === 'user' ? 'user' : 'bot'
@@ -257,19 +246,8 @@ export default {
       // 删除历史对话
       const conversationId = this.chatHistory[index].id;
       try {
-        // 从localStorage获取当前用户信息
-        const userStr = localStorage.getItem('user');
-        let userId = null;
-        
-        if (userStr) {
-          const user = JSON.parse(userStr);
-          userId = user.user_id;
-        }
-        
-        // 添加user_id参数到请求URL
-        await fetch(`http://39.107.159.184:5001/api/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`, {
-          method: 'DELETE'
-        });
+        // 调用chatApi中的deleteConversation方法
+        await chatApi.deleteConversation(conversationId);
         
         this.chatHistory.splice(index, 1);
         if (this.selectedHistoryIndex === index) {
@@ -385,7 +363,7 @@ export default {
         this.suggestions = [];
         const usedIndices = new Set();
         
-        while (this.suggestions.length < 5 && usedIndices.size < allSuggestions.length) {
+        while (this.suggestions.length < 3 && usedIndices.size < allSuggestions.length) {
           const randomIndex = Math.floor(Math.random() * allSuggestions.length);
           if (!usedIndices.has(randomIndex)) {
             usedIndices.add(randomIndex);
@@ -477,7 +455,7 @@ export default {
 
 .new-chat-span {
   color: white;
-  font-size: 24px;
+  font-size: clamp(1.25rem, 5vw, 1.5rem);
   font-weight: bold;
   line-height: 1;
 }
@@ -486,10 +464,17 @@ export default {
 .drawer {
   position: fixed;
   top: 0;
-  left: -85%;
+  left: -100%;
   width: 85%;
-  height: 100%; /* 修改高度，使其占满整个屏幕高度 */
+  max-width: 300px;
+  height: 100%;
   background-color: #f8f8f8;
+  transition: left 0.3s ease;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    max-width: none;
+  }
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   transition: left 0.3s ease;
@@ -518,7 +503,7 @@ export default {
 }
 
 .close-drawer {
-  font-size: 24px;
+  font-size: clamp(1.25rem, 5vw, 1.5rem);
   cursor: pointer;
   color: #333;
   width: 24px;
@@ -660,11 +645,12 @@ export default {
 .chat-content {
   flex: 1;
   overflow-y: auto;
-  padding: 15px;
-  padding-bottom: 120px; /* 增加底部padding，确保最后的消息不被输入框遮挡 */
+  padding: 0 1rem 120px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  max-width: min(90%, 800px);
+  margin: 0 auto;
 }
 
 .message-container {
@@ -711,6 +697,10 @@ export default {
   border-radius: 4px 18px 18px 18px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   align-self: flex-start;
+}
+
+.bot-message .message-content {
+  text-align: left;
 }
 
 .feedback-buttons {

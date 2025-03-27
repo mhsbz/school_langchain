@@ -3,7 +3,7 @@ import uuid
 import random
 from services.db_service import get_db
 from services.vector_store import get_vector_store
-from services.llm_service import generate_answer
+from services.llm_service import generate_answer, intention_recognition
 from utils import app_logger
 from utils.logger import chat_logger
 
@@ -211,24 +211,44 @@ def process_question(question, conversation_id=None, user_id=None):
         回答内容和对话ID
     """
     try:
-        # 获取向量存储实例
-        vector_store = get_vector_store()
-        
-        # 检索相关上下文
-        retriever = vector_store.as_retriever(search_kwargs={"k": 3})
-        docs = retriever.get_relevant_documents(question)
-        
-        # 合并上下文
-        context = "\n\n".join([doc.page_content for doc in docs])
-        
-        # 生成回答
-        answer = generate_answer(question, context)
-        
         # 处理对话ID
         if conversation_id is None:
             # 创建新对话，使用问题的前20个字符作为标题
             title = question[:20] + "..." if len(question) > 20 else question
             conversation_id = create_conversation(title, user_id)
+            # 新对话没有历史消息
+            history = []
+        else:
+            # 获取现有对话的历史消息
+            messages = get_conversation_messages(conversation_id)
+            # 将消息转换为LLM API所需的格式
+            history = [
+                {"role": msg["role"], "content": msg["content"]}
+                for msg in messages
+            ]
+        
+        # 进行意图识别，判断是否需要检索知识库
+        intention_result = intention_recognition(question, history)
+        
+        # 根据意图识别结果决定是否需要检索知识库
+        if intention_result.get("need_retrieval", True):
+            # 获取向量存储实例
+            vector_store = get_vector_store()
+            
+            # 检索相关上下文
+            retriever = vector_store.as_retriever(search_kwargs={"k": 3})
+            # 如果有优化后的查询，则使用优化后的查询进行检索
+            search_query = intention_result.get("rewritten_query", "") or question
+            docs = retriever.get_relevant_documents(search_query)
+            
+            # 合并上下文
+            context = "\n\n".join([doc.page_content for doc in docs])
+            
+            # 生成回答，传入对话历史
+            answer = generate_answer(question, context, history)
+        else:
+            # 如果不需要检索知识库，直接使用意图识别结果中的直接回答
+            answer = intention_result.get("direct_answer", "抱歉，我无法理解您的问题。")
         
         # 保存用户问题和系统回答
         save_message(conversation_id, question, 'user', user_id)

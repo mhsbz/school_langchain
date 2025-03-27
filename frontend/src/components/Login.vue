@@ -168,7 +168,7 @@ label {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
   overflow: hidden;
@@ -194,10 +194,21 @@ label {
 }
 
 .login-box {
-  width: 420px;
-  padding: 40px;
+  width: 90%;
+  max-width: 420px;
+  padding: 2rem;
   background-color: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
+  border-radius: 1rem;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+  }
+  @media (max-width: 480px) {
+    width: 95%;
+    padding: 1rem;
+  }
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
   position: relative;
@@ -213,7 +224,7 @@ label {
 .login-header h2 {
   color: #2c3e50;
   font-weight: 600;
-  font-size: 28px;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
   letter-spacing: 1px;
   margin: 0;
   position: relative;

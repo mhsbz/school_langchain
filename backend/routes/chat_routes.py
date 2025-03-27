@@ -42,7 +42,7 @@ def handle_question():
         user_id = data.get('user_id')  # 获取用户ID
         
         # 记录请求日志
-        chat_logger.info(f'收到问题请求: user_id={user_id}, conversation_id={conversation_id}, question={question[:30]}...')
+        chat_logger.info(f'收到问题请求: user_id={user_id}, conversation_id={conversation_id}, question={question}')
         
         # 处理问题
         result = process_question(question, conversation_id, user_id)

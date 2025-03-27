@@ -3,7 +3,8 @@ import axios from 'axios';
 // 创建axios实例
 const api = axios.create({
   // baseURL: 'api',
-  baseURL: 'http://39.107.159.184:5001/api',
+  // baseURL: 'http://39.107.159.184:5001/api',
+  baseURL: 'http://localhost:5001/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json'
@@ -31,6 +32,27 @@ api.interceptors.response.use(
 
 // 聊天相关API
 const chatApi = {
+  // 获取对话消息
+  getConversationMessages: async (conversationId) => {
+    try {
+      // 从localStorage获取当前用户信息
+      const userStr = localStorage.getItem('user');
+      let userId = null;
+      
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        userId = user.user_id;
+      }
+      
+      // 添加user_id参数到请求URL
+      const response = await api.get(`/chat/messages?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`);
+      return response.data;
+    } catch (error) {
+      console.error('获取对话消息失败:', error);
+      throw error;
+    }
+  },
+  
   // 获取聊天历史
   getChatHistory: async () => {
     try {
@@ -90,6 +112,27 @@ const chatApi = {
       return response.data;
     } catch (error) {
       console.error('获取推荐问题失败:', error);
+      throw error;
+    }
+  },
+  
+  // 删除指定对话
+  deleteConversation: async (conversationId) => {
+    try {
+      // 从localStorage获取当前用户信息
+      const userStr = localStorage.getItem('user');
+      let userId = null;
+      
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        userId = user.user_id;
+      }
+      
+      // 添加user_id参数到请求URL
+      const response = await api.delete(`/chat/history?conversation_id=${conversationId}${userId ? `&user_id=${userId}` : ''}`);
+      return response.data;
+    } catch (error) {
+      console.error('删除对话失败:', error);
       throw error;
     }
   }
