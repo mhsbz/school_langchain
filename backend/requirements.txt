@@ -17,4 +17,3 @@ bs4
 beautifulsoup4
 pytz
 openai
-gunicorn

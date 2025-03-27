@@ -14,5 +14,5 @@ COPY . .
 # 暴露端口
 EXPOSE 5001
 
-# 启动应用 - 使用Gunicorn作为生产级WSGI服务器
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "app:app", "--workers", "3"]
+# 启动应用
+CMD ["python", "app.py"]
