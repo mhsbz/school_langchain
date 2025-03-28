@@ -56,7 +56,7 @@
           <img src="@/assets/images/机器人头像.png" alt="机器人" class="robot-avatar">
         </div>
         <div class="intro-box">
-          <p>您好，我是智融千问，您的智能助手。我可以回答关于学校的各种问题，包括历史、专业设置、师资力量等。请问有什么可以帮助您的吗？</p>
+          <p style="text-align: left;">您好，我是智融千问，您的智能助手。我可以回答关于学校的各种问题，包括历史、专业设置、师资力量等。请问有什么可以帮助您的吗？</p>
         </div>
       </div>
       
@@ -127,6 +127,8 @@
           v-model="inputMessage" 
           placeholder="请输入您的问题"
           @keyup.enter="sendMessage"
+          @focus="handleInputFocus"
+          @blur="handleInputBlur"
         >
       </div>
       <div class="send-button" @click="sendMessage">
@@ -187,14 +189,45 @@ export default {
     updated() {
       this.scrollToBottom();
     },
+    
+    // 处理输入框获得焦点事件（输入法弹出）
+    handleInputFocus() {
+      // 当输入框获得焦点时，隐藏"猜你想问"区域
+      this.hasConversationStarted = true;
+      
+      // 防止输入法弹出时页面被顶上去
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        
+        // 确保聊天内容区域滚动到底部
+        this.scrollToBottom();
+      }, 100);
+    },
+    
+    // 处理输入框失去焦点事件
+    handleInputBlur() {
+      // 如果没有对话开始，恢复显示"猜你想问"区域
+      if (this.messages.length === 0) {
+        this.hasConversationStarted = false;
+      }
+      
+      // 防止输入法收起时页面布局异常
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }, 100);
+    },
     async fetchSuggestions() {
       try {
         const response = await chatApi.getSuggestions();
         this.suggestions = response.suggestions;
       } catch (error) {
         console.error('获取推荐问题失败:', error);
-        // 使用默认推荐问题
-        this.refreshSuggestions();
+        // 使用默认推荐问题生成
+        this.generateDefaultSuggestions();
       }
     },
     async fetchConversations() {
@@ -214,10 +247,17 @@ export default {
     async loadConversationMessages(conversationId) {
       try {
         const messages = await chatApi.getConversationMessages(conversationId);
-        return messages.map(msg => ({
+        const mappedMessages = messages.map(msg => ({
           content: msg.content,
           type: msg.role === 'user' ? 'user' : 'bot'
         }));
+        
+        // 如果有消息，设置对话已开始，隐藏"猜你想问"区域
+        if (mappedMessages.length > 0) {
+          this.hasConversationStarted = true;
+        }
+        
+        return mappedMessages;
       } catch (error) {
         console.error('获取对话消息失败:', error);
         return [];
@@ -259,7 +299,7 @@ export default {
       this.messages = [];
       this.selectedHistoryIndex = -1;
       this.currentConversationId = null;
-      // 重置对话状态，使"猜你想问"区域可见
+      // 重置对话状态，显示"猜你想问"区域
       this.hasConversationStarted = false;
       // 刷新推荐问题
       this.refreshSuggestions();
@@ -277,14 +317,14 @@ export default {
         type: 'user'
       });
       
+      // 设置对话已开始，隐藏"猜你想问"区域
+      this.hasConversationStarted = true;
+      
       // 保存用户输入
       const question = this.inputMessage;
       
       // 清空输入框
       this.inputMessage = '';
-      
-      // 设置对话已开始，隐藏"猜你想问"区域
-      this.hasConversationStarted = true;
       
       // 显示加载状态
       this.isLoading = true;
@@ -323,7 +363,7 @@ export default {
           this.scrollToBottom();
         });
       }
-    },
+    }},
     clearInput() {
       this.inputMessage = '';
     },
@@ -370,11 +410,15 @@ export default {
         // 使用setTimeout确保在DOM完全更新后执行滚动
         setTimeout(() => {
           this.$refs.chatContent.scrollTop = this.$refs.chatContent.scrollHeight;
-        }, 0);
+          
+          // 防止iOS输入法弹出时页面滚动问题
+          window.scrollTo(0, 0);
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        }, 150); // 增加延迟时间，确保在键盘弹出后也能正确滚动
       }
     }
   }
-}
 </script>
 
 <style scoped>
@@ -388,6 +432,12 @@ export default {
   background-color: #f5f5f5;
   position: relative;
   overflow-x: hidden;
+  /* 防止输入法弹出时页面被顶上去 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 /* 菜单图标样式 */
@@ -466,6 +516,13 @@ export default {
   transition: left 0.3s ease;
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 480px) {
+  .drawer {
+    left: -80%;
+    width: 80%;
+  }
 }
 
 .drawer-open {
@@ -636,6 +693,15 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  -webkit-overflow-scrolling: touch; /* 增强iOS滚动体验 */
+  /* 防止输入法弹出时内容区域被推上去 */
+  position: absolute;
+  top: 50px; /* 头部标题高度 */
+  left: 0;
+  right: 0;
+  bottom: 70px; /* 输入框高度 */
+  height: auto;
+  padding-top: 25px; /* 增加顶部内边距，确保第一条消息不被覆盖 */
 }
 
 .message-container {
@@ -667,6 +733,7 @@ export default {
   border-radius: 10px;
   position: relative;
   word-break: break-word;
+  box-sizing: border-box;
 }
 
 .user-message {
@@ -708,9 +775,15 @@ export default {
 .suggestions-container {
   background-color: white;
   padding: 15px;
-  margin-bottom: 70px; /* 为底部固定的输入框留出空间 */
+  margin-bottom: 0; /* 紧贴输入栏 */
   border-radius: 10px 10px 0 0;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 70px; /* 与输入框的高度保持一致，确保紧贴输入栏 */
+  left: 0;
+  z-index: 10;
 }
 
 .suggestions-header {
@@ -795,6 +868,11 @@ export default {
   right: 0;
   z-index: 1001;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  max-height: 70px;
+  transition: transform 0.3s ease;
+  /* 防止输入法弹出时页面被顶上去 */
+  position: absolute;
+  bottom: 0;
 }
 
 .input-box {
@@ -896,7 +974,7 @@ input {
   }
   
   .message {
-    max-width: 80%;
+    max-width: 75%;
   }
   
   .chat-header {
@@ -910,10 +988,12 @@ input {
   .chat-content {
     padding: 12px;
     gap: 12px;
+    padding-bottom: 120px; /* 增加底部内边距，确保最后一条消息不被输入框遮挡 */
   }
   
   .suggestions-container {
     padding: 12px;
+    margin-bottom: 70px; /* 增加底部边距 */
   }
   
   .suggestion-item {
@@ -924,15 +1004,24 @@ input {
   .input-container {
     padding: 10px;
   }
+  
+  .input-box {
+    padding: 0 10px;
+  }
+  
+  input {
+    padding: 10px 10px 10px 0;
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 480px) {
   .message {
-    max-width: 85%;
+    max-width: 80%;
   }
   
   .intro-box {
-    max-width: 85%;
+    max-width: 80%;
     padding: 12px;
     font-size: 14px;
   }
@@ -952,6 +1041,57 @@ input {
   .feedback-btn {
     width: 20px;
     height: 20px;
+  }
+  
+  .robot-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .avatar-container {
+    margin-right: 8px;
+  }
+  
+  .send-button {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .send-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .new-chat-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .new-chat-icon .new-chat-img {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* 移动端键盘弹出时的适配 */
+  .chat-content {
+    padding-bottom: 140px; /* 增加更多底部内边距 */
+  }
+  
+  /* 确保抽屉在移动端不会太宽 */
+  .drawer-content {
+    padding: 10px;
+  }
+  
+  /* 优化移动端滚动体验 */
+  .history-list {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* 处理iOS键盘弹出的特殊情况 */
+@supports (-webkit-touch-callout: none) {
+  .chat-content {
+    padding-bottom: 160px; /* iOS设备额外增加底部内边距 */
   }
 }
 </style>
