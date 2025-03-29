@@ -418,8 +418,7 @@ export default {
         }, 150); // 增加延迟时间，确保在键盘弹出后也能正确滚动
       }
     }
-  }
-}
+  }}
 </script>
 
 <style scoped>
@@ -782,7 +781,7 @@ export default {
   width: 100%;
   box-sizing: border-box;
   position: absolute;
-  bottom: 10px; /* 与输入框的高度保持一致，确保紧贴输入栏 */
+  bottom: 70px; /* 与输入框的高度保持一致，确保紧贴输入栏 */
   left: 0;
   z-index: 10;
 }
@@ -873,11 +872,7 @@ export default {
   transition: transform 0.3s ease;
   /* 防止输入法弹出时页面被顶上去 */
   position: absolute;
-  bottom: 10px;
-  border-radius: 10px; /* 你可以根据需要调整这个值 */
-  /* 可以添加其他样式，比如边框、阴影等 */
-  border: 1px solid #ccc; /* 示例边框 */
-  padding: 8px; 
+  bottom: 0;
 }
 
 .input-box {
