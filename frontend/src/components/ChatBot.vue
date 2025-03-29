@@ -363,7 +363,7 @@ export default {
           this.scrollToBottom();
         });
       }
-    }},
+    },
     clearInput() {
       this.inputMessage = '';
     },
@@ -418,7 +418,7 @@ export default {
         }, 150); // 增加延迟时间，确保在键盘弹出后也能正确滚动
       }
     }
-  }
+  }}
 </script>
 
 <style scoped>
