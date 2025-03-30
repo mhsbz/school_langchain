@@ -108,6 +108,7 @@ def generate_answer(question, context, history=None):
         }
 
         print(Config.DEEPSEEK_API_KEY)
+        print(Config.DEEPSEEK_API_URL)
         
         # 设置请求头
         headers = {
@@ -117,7 +118,7 @@ def generate_answer(question, context, history=None):
         
         # 发送请求
         response = requests.post(
-            Config.DEEPSEEK_API_URL,
+            "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
             headers=headers,
             data=json.dumps(payload)
         )
