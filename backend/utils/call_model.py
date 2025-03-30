@@ -23,11 +23,11 @@ def call_deepseek(messages: list) -> str:
     while retry_count < max_retries:
         try:
             # 初始化OpenAI客户端
-            client = OpenAI(api_key=api_key,base_url="https://api.deepseek.com")
+            client = OpenAI(api_key=api_key,base_url=api_url)
             
             # 调用模型生成响应
             response = client.chat.completions.create(
-                model="deepseek-chat",
+                model="deepseek-v3-250324",
                 messages=messages,
                 temperature=0.1,
                 stream=False,

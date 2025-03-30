@@ -100,7 +100,7 @@ def generate_answer(question, context, history=None):
         
         # 构建请求数据
         payload = {
-            "model": "deepseek-chat",
+            "model": "deepseek-v3-250324",
             "messages": messages,
             "temperature": 0.7,
             "max_tokens": 800,
