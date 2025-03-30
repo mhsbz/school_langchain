@@ -776,19 +776,23 @@ export default {
 .suggestions-container {
   background-color: white;
   padding: 15px;
-  margin-bottom: 0; /* 紧贴输入栏 */
-  border-radius: 10px 10px 0 0;
+  margin-bottom: 5px; /* 紧贴输入栏 */
+  border-radius: 10px 10px 0 0 ;
+  left: 10px; /* 设置左侧间距 */
+  right: 10px; /* 设置右侧间距 */
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
   width: 100%;
+  z-index: 1001;
   box-sizing: border-box;
   position: absolute;
-  bottom: 10px; /* 与输入框的高度保持一致，确保紧贴输入栏 */
+  bottom: 5VW; /* 与输入框的高度保持一致，确保紧贴输入栏 */
   left: 0;
-  z-index: 10;
+  /* z-index: 10; */
+  position: fixed;
 }
 
 .suggestions-header {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   position: relative;
 }
 
@@ -831,7 +835,7 @@ export default {
 .suggestions-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .suggestion-item {
@@ -841,7 +845,7 @@ export default {
   padding: 12px 15px;
   background-color: #f5f5f5;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   color: #333;
   transition: background-color 0.2s ease;
@@ -859,25 +863,22 @@ export default {
 
 .input-container {
   display: flex;
-  padding: 15px;
+  padding: 15px; /* 你可以根据需要调整这个值来增加或减少间距 */
   background-color: white;
   border-top: 1px solid #eee;
   align-items: center;
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 5px; /* 设置底部间距 */
+  left: 5px; /* 设置左侧间距 */
+  right: 5px; /* 设置右侧间距 */
   z-index: 1001;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   max-height: 70px;
   transition: transform 0.3s ease;
+  border-radius: 15px; /* 设置圆角的大小 */
   /* 防止输入法弹出时页面被顶上去 */
-  position: absolute;
-  bottom: 10px;
-  border-radius: 10px; /* 你可以根据需要调整这个值 */
-  /* 可以添加其他样式，比如边框、阴影等 */
-  border: 1px solid #ccc; /* 示例边框 */
-  padding: 8px; 
+  /* 注意：如果你设置了 left 和 right 属性，那么 position: absolute; 可能不再需要 */
+  position: fixed; /* 修正为 fixed 以确保它相对于视口定位 */
 }
 
 .input-box {
