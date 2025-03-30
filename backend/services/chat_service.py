@@ -261,7 +261,8 @@ def process_question(question, conversation_id=None, user_id=None):
         }
     except Exception as e:
         # 记录错误日志
-        app_logger.error(f"处理问题失败: {e}")
+        # 记录详细的错误信息，包括错误类型和堆栈跟踪
+        app_logger.error(f"处理问题失败: {str(e)}, 错误类型: {type(e)}", exc_info=True)
         return {
             'answer': "抱歉，处理您的问题时出现错误，请稍后再试。",
             'conversation_id': conversation_id
