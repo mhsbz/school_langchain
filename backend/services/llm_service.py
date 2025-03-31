@@ -41,6 +41,7 @@ def intention_recognition(question, history=None) -> dict:
 
 ## 输出格式
 始终返回JSON格式：
+以下是返回示例：
 {example}"""
 
     example = """{
