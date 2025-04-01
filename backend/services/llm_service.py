@@ -61,7 +61,7 @@ def intention_recognition(question, history=None) -> dict:
         )
     }])
     res = res.replace("```json", "").replace("```", "").strip().strip("\n")
-    print(res)
+    print("res===",res)
     json_data = json.loads(res)
 
     return json_data
