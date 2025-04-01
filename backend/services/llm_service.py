@@ -102,7 +102,7 @@ def generate_answer(question, context, history=None):
         
         # 构建请求数据
         payload = {
-            "model": "deepseek-v3-250324",
+            "model": "deepseek-chat",
             "messages": messages,
             "temperature": 0.7,
             "max_tokens": 800,
@@ -120,7 +120,7 @@ def generate_answer(question, context, history=None):
         
         # 发送请求
         response = requests.post(
-            "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+            Config.DEEPSEEK_API_URL,
             headers=headers,
             data=json.dumps(payload)
         )

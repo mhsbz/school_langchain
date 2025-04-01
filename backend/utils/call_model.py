@@ -27,7 +27,7 @@ def call_deepseek(messages: list) -> str:
             
             # 调用模型生成响应
             response = client.chat.completions.create(
-                model="deepseek-v3-250324",
+                model="deepseek-chat",
                 messages=messages,
                 temperature=0.1,
                 stream=False,
