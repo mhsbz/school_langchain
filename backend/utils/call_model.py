@@ -1,6 +1,6 @@
 from openai import OpenAI
 from config import Config
-
+import requests
 
 def call_deepseek(messages: list) -> str:
 
@@ -45,8 +45,10 @@ def call_deepseek(messages: list) -> str:
                 return ""
 
 def call_sharegpt(conv_id: str, message: str) -> str:
+    url = "http://39.107.159.184:3000/api/v1/chat/completions"
+
     headers = {
-        "Authorization": "Bearer fastgpt-l7WJdDNcZ39v7vkYrQO25c8GY87cytPVf91xtiM6wM12vJyx1EA5li",
+        "Authorization": "Bearer fastgpt-cYz8Kx2D5eeGj34UKDhg8LzZ1SDx6iAA5aiUNLVrkK131wSgNOfC0HuEJ",
         "Content-Type": "application/json"
     }
 
@@ -59,3 +61,12 @@ def call_sharegpt(conv_id: str, message: str) -> str:
             }
         ]
     }
+
+    response = requests.post(url, headers=headers, json=payload)
+
+    response = response.json()
+
+    return response["choices"][0]["message"]["content"]
+# 打印响应
+    # print(response.status_code)
+    # print(response.)

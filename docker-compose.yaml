@@ -15,48 +15,48 @@ services:
       - app-network
 
   # 后端服务
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: school-backend
-    ports:
-      - "5001:5001"
-    volumes:
-      - ./backend:/app
-      - ./backend/data:/app/data
-      - ./backend/vector_store:/app/vector_store
-      - ./backend/model_cache:/app/model_cache
-      - ./backend/logs:/app/logs
-    environment:
-      - MONGO_URI=mongodb://admin:password@mongodb:27017
-      - MONGO_DB_NAME=school_chat
-      - VECTOR_STORE_DIR=/app/vector_store
-      - EMBEDDING_MODEL=/app/model_cache
-      - DEEPSEEK_API_KEY=sk-ffb4ab7b13654778baecf760b47634e9
-      - DEEPSEEK_API_URL=https://api.deepseek.com/chat/completions
-    depends_on:
-      - mongodb
-    restart: unless-stopped
-    networks:
-      - app-network
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   container_name: school-backend
+  #   ports:
+  #     - "5001:5001"
+  #   volumes:
+  #     - ./backend:/app
+  #     - ./backend/data:/app/data
+  #     - ./backend/vector_store:/app/vector_store
+  #     - ./backend/model_cache:/app/model_cache
+  #     - ./backend/logs:/app/logs
+  #   environment:
+  #     - MONGO_URI=mongodb://admin:password@mongodb:27017
+  #     - MONGO_DB_NAME=school_chat
+  #     - VECTOR_STORE_DIR=/app/vector_store
+  #     - EMBEDDING_MODEL=/app/model_cache
+  #     - DEEPSEEK_API_KEY=sk-ffb4ab7b13654778baecf760b47634e9
+  #     - DEEPSEEK_API_URL=https://api.deepseek.com/chat/completions
+  #   depends_on:
+  #     - mongodb
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-network
 
-  # 前端服务
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: school-frontend
-    ports:
-      - "8080:80"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    depends_on:
-      - backend
-    restart: unless-stopped
-    networks:
-      - app-network
+  # # 前端服务
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: school-frontend
+  #   ports:
+  #     - "8080:80"
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #   depends_on:
+  #     - backend
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-network
 
 networks:
   app-network:
