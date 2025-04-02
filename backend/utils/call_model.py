@@ -43,3 +43,19 @@ def call_deepseek(messages: list) -> str:
             print(f"调用deepseek模型时发生错误 (尝试 {retry_count}/{max_retries}): {str(e)}")
             if retry_count == max_retries:
                 return ""
+
+def call_sharegpt(conv_id: str, message: str) -> str:
+    headers = {
+        "Authorization": "Bearer fastgpt-l7WJdDNcZ39v7vkYrQO25c8GY87cytPVf91xtiM6wM12vJyx1EA5li",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "chatId": conv_id,
+        "messages": [
+            {
+                "role": "user",
+                "content": message
+            }
+        ]
+    }
