@@ -782,9 +782,10 @@ export default {
   width: 100%;
   box-sizing: border-box;
   position: absolute;
-  bottom: 8vw; /* 与输入框的高度保持一致，确保紧贴输入栏 */
+  bottom: 7VW; /* 与输入框的高度保持一致，确保紧贴输入栏 */
   left: 0;
-  z-index: 10;
+  /* z-index: 10; */
+  position: fixed;
 }
 
 .suggestions-header {
@@ -869,11 +870,10 @@ export default {
   right: 0;
   z-index: 1001;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  max-height: 70px;
+  max-height: 10vw;
   transition: transform 0.3s ease;
   /* 防止输入法弹出时页面被顶上去 */
-  position: absolute;
-  bottom: 0;
+  position: fixed;
 }
 
 .input-box {
