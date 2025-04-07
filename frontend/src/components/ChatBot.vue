@@ -64,9 +64,13 @@
       <div v-for="(message, index) in messages" :key="index" class="message-container" :class="message.type">
         <!-- 用户消息 -->
         <template v-if="message.type === 'user'">
+           
           <div class="message user-message">
             <div class="message-content">{{ message.content }}</div>
           </div>
+           <div class="avatar-container" style="margin-left: 5px;">
+          <img src="@/assets/images/user.jpg" alt="用户" class="robot-avatar">
+        </div>
         </template>
         
         <!-- 机器人消息 -->
